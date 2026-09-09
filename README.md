@@ -1,12 +1,10 @@
 # Fruit Merge King
 
-A Suika-style merge puzzle game in vanilla JavaScript and Canvas.
-No framework, no build step, no runtime dependencies — clone it, serve it,
-play it.
+**Fruit Merge King** is a free, open-source fruit merge game in the style of
+Suika / the watermelon game. Drop fruits, merge matching pairs and grow the
+ultimate watermelon — right in your browser, on desktop and mobile.
 
-Drop fruits into the jar. Two identical fruits merge into the next size up.
-Chain merges within two seconds for combo multipliers — but if the pile
-rests above the red line for too long, the run ends.
+▶️ **Play online (free, no download):** https://fruit-merge-game.vercel.app
 
 ![gameplay](screenshot/screenshot.png)
 
@@ -23,9 +21,6 @@ rests above the red line for too long, the run ends.
 - Progress saved to localStorage
 - Sound effects synthesized live with WebAudio; the repo ships no binary assets
 
-## Play it live
-
-Try the game online: https://game.ssqlab.online/
 
 ## Getting started
 
@@ -37,3 +32,10 @@ npx serve
 # or
 python3 -m http.server 8080
 ```
+
+## FAQ
+
+**Is it free?** Yes — fully free and open source (MIT), no ads.
+**Does it work on phones?** Yes, touch controls included.
+**Can I play offline / host it myself?** Yes, it's a static site — clone and serve.
+**What is a Suika game?** A merge-puzzle genre where identical items combine into bigger ones; the original Japanese watermelon game went viral in 2023.
