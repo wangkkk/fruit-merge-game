@@ -1,0 +1,22 @@
+{
+  "name": "fruit-merge-game",
+  "version": "1.0.0",
+  "description": "Free Suika-Style Fruit Merge Game",
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'No build step needed for vanilla JS'",
+    "lint": "echo 'No linter configured'"
+  },
+  "keywords": [
+    "game",
+    "fruit",
+    "merge",
+    "suika"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^1.4.1"
+  }
+}

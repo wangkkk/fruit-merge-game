@@ -6,6 +6,7 @@
  *   因此 boot() 只需做：语言初始化 -> HUD/库存初始渲染 -> 开局
  *   -> 首次帮助弹窗 -> 启动主循环。
  * ============================================================ */
+import { inject } from '@vercel/analytics';
 import { initLang } from './i18n/index.js';
 import { $, toast, showModal } from './ui/dom.js';
 import { renderBag } from './ui/tools.js';
@@ -22,6 +23,9 @@ import './ui/input.js';
 window.addEventListener('error', function (e) {
   try { toast('⚠️ ' + e.message, 3000); } catch (_) { /* 异常时不再递归 */ }
 });
+
+/* Initialize Vercel Web Analytics */
+inject();
 
 function boot() {
   /* 语言：无存档时按浏览器探测（initLang 内部已处理）并刷新界面词条 */
