@@ -35,7 +35,7 @@ python3 -m http.server 8080
 
 ## FAQ
 
-**Is it free?** Yes — fully free and open source (MIT), no ads.
-**Does it work on phones?** Yes, touch controls included.
-**Can I play offline / host it myself?** Yes, it's a static site — clone and serve.
-**What is a Suika game?** A merge-puzzle genre where identical items combine into bigger ones; the original Japanese watermelon game went viral in 2023.
+- **Is it free?** Yes — fully free and open source (MIT), no ads.
+- **Does it work on phones?** Yes, touch controls included.
+- **Can I play offline / host it myself?** Yes, it's a static site — clone and serve.
+- **What is a Suika game?** A merge-puzzle genre where identical items combine into bigger ones; the original Japanese watermelon game went viral in 2023.
