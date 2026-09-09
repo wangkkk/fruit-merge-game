@@ -4,7 +4,7 @@
 Suika / the watermelon game. Drop fruits, merge matching pairs and grow the
 ultimate watermelon — right in your browser, on desktop and mobile.
 
-▶️ **Play online (free, no download):** https://fruit-merge-game.vercel.app
+▶️ **Play online (free, no download):** https://game.ssqlab.online
 
 ![gameplay](screenshot/screenshot.png)
 
