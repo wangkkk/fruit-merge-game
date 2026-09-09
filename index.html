@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>水果合成王</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{background:linear-gradient(160deg,#12124a,#3a1c71);font-family:system-ui,"PingFang SC","Microsoft Yahei",sans-serif;
+       display:flex;justify-content:center;user-select:none;overscroll-behavior:none;color:#fff}
+  #app{width:min(100vw,430px);padding:8px;position:relative}
+  #hud{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+       border-radius:14px;padding:8px 10px;margin-bottom:8px;backdrop-filter:blur(6px)}
+  .stat{flex:1;text-align:center;min-width:0}
+  .stat .lbl{font-size:10px;color:#aab;letter-spacing:1px}
+  .stat .val{font-size:17px;font-weight:800;text-shadow:0 2px 6px rgba(0,0,0,.4);white-space:nowrap}
+  .stat .val.gold{color:#ffd32a}
+  #hudBtns{display:flex;gap:4px}
+  #hudBtns button{width:30px;height:30px;border:none;border-radius:9px;background:rgba(255,255,255,.14);
+       font-size:14px;cursor:pointer;transition:.15s}
+  #hudBtns button:active{transform:scale(.9)}
+  @media(max-width:380px){.stat .val{font-size:14px}.stat .lbl{font-size:9px}
+    #hudBtns button{width:26px;height:26px;font-size:12px}}
+  #stage{position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.15);
+        box-shadow:0 12px 40px rgba(0,0,0,.45)}
+  canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}
+  #modeTip{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);
+        padding:5px 12px;border-radius:20px;font-size:12px;display:none;white-space:nowrap;z-index:5;max-width:94%;overflow:hidden;text-overflow:ellipsis}
+  #bar{display:flex;gap:6px;margin-top:8px;align-items:stretch;flex-wrap:wrap;row-gap:6px}
+  #nextBox{background:rgba(255,255,255,.1);border-radius:12px;display:flex;flex-direction:column;
+        align-items:center;justify-content:center;padding:4px 10px}
+  #nextBox .lbl{font-size:10px;color:#aab}
+  #nextFruit{font-size:22px;line-height:1.1}
+  .tool{position:relative;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;
+        font-size:21px;cursor:pointer;transition:.15s;padding:6px 10px;flex:none}
+  .tool:active{transform:scale(.92)}
+  .tool.sel{background:linear-gradient(135deg,#ff9f43,#ee5253);border-color:#ffd32a}
+  .tool .tn{position:absolute;top:-6px;right:-6px;background:#ffd32a;color:#333;border-radius:9px;
+        font-style:normal;font-size:10px;font-weight:800;padding:1px 5px}
+  #btnDaily{margin-left:auto;background:linear-gradient(135deg,#10ac84,#1dd1a1);border:none;border-radius:12px;
+        color:#fff;font-weight:700;padding:0 14px;cursor:pointer;font-size:13px;white-space:nowrap}
+  .mask{position:fixed;inset:0;background:rgba(8,8,30,.72);display:none;align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(3px)}
+  .mask.on{display:flex}
+  .card{background:linear-gradient(170deg,#2d2b6b,#211f4d);border:1px solid rgba(255,255,255,.18);border-radius:20px;
+        padding:22px;width:min(88vw,340px);text-align:center;max-height:92vh;overflow-y:auto;animation:pu .25s ease}
+  @keyframes pu{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+  .card h2{font-size:20px;margin-bottom:12px}
+  .card p.help{font-size:13px;line-height:1.9;color:#ccd;text-align:left;margin-bottom:14px;white-space:pre-line}
+  .card p.shareTip{font-size:12px;color:#aab;margin-bottom:10px;white-space:pre-line}
+  .btn{display:block;width:100%;border:none;border-radius:12px;padding:11px;font-size:15px;font-weight:800;
+        margin-top:9px;cursor:pointer;transition:.15s}
+  .btn:active{transform:scale(.96)}
+  .btn.primary{background:linear-gradient(135deg,#5f27cd,#8854d0);color:#fff}
+  .btn.gold{background:linear-gradient(135deg,#f9ca24,#ff9f43);color:#4a3200}
+  .btn.ghost{background:rgba(255,255,255,.12);color:#fff}
+  .btn:disabled{filter:grayscale(.9);opacity:.5;cursor:not-allowed}
+  .btn.mini{display:inline-block;width:auto;padding:7px 16px;margin:0;font-size:12px;
+        background:linear-gradient(135deg,#f9ca24,#ff9f43);color:#4a3200}
+  .btn.mini:disabled{filter:grayscale(1);opacity:.6;background:rgba(255,255,255,.12);color:#fff}
+  .bigScore{font-size:44px;font-weight:900;color:#ffd32a;text-shadow:0 0 18px rgba(255,210,42,.5)}
+  #overRank{font-size:15px;color:#7bed9f;margin-bottom:4px;font-weight:700;line-height:1.6}
+  .overStats{font-size:12px;color:#aab;margin:10px 0 4px}
+  #achList{max-height:300px;overflow-y:auto;text-align:left;margin-bottom:6px}
+  .arow{display:flex;gap:10px;align-items:center;padding:8px;border-radius:10px;background:rgba(255,255,255,.05);margin-bottom:6px}
+  .arow .ai{font-size:20px}
+  .arow .an{font-weight:700;font-size:13px}
+  .arow .ad{font-size:11px;color:#99a}
+  .arow .ar{margin-left:auto;font-size:12px;color:#ffd32a;white-space:nowrap}
+  .arow.done{background:rgba(46,213,115,.12)}
+  #dailyGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:6px}
+  .dcell{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 4px;font-size:11px}
+  .dcell b{display:block;font-size:13px;color:#ffd32a}
+  .dcell.past{opacity:.45}.dcell.today{border-color:#ffd32a;background:rgba(249,202,36,.15)}
+  .skrow{display:flex;gap:10px;align-items:center;padding:9px;background:rgba(255,255,255,.05);
+        border-radius:12px;margin-bottom:8px;border:1px solid transparent}
+  .skrow.act{border-color:#ffd32a;background:rgba(249,202,36,.12)}
+  .sprev{font-size:24px;letter-spacing:3px;white-space:nowrap}
+  .skmeta{flex:1;text-align:left;min-width:0}
+  .sn{font-weight:700;font-size:14px}
+  .sp{font-size:11px;color:#ffd32a;min-height:14px}
+  #langList .btn.sel{outline:2px solid #7bed9f;outline-offset:-2px}
+  #shareImg{width:100%;border-radius:14px;display:block;margin-bottom:6px}
+  #shareBonus{font-size:12px;color:#ffd32a;margin:4px 0 2px;min-height:16px}
+  .rec{color:#ffd32a;animation:bl 1s infinite}
+  @keyframes bl{50%{opacity:.55}}
+  #toasts{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);z-index:99;display:flex;
+        flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+  .toast{background:rgba(0,0,0,.8);padding:8px 16px;border-radius:22px;font-size:13px;opacity:0;transition:.3s;white-space:nowrap;max-width:88vw}
+  .toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="hud">
+    <div class="stat"><div class="lbl" data-i18n="score"></div><div class="val" id="uiScore">0</div></div>
+    <div class="stat"><div class="lbl" data-i18n="best"></div><div class="val" id="uiBest">0</div></div>
+    <div class="stat"><div class="lbl" data-i18n="coins"></div><div class="val gold" id="uiCoins">0</div></div>
+    <div id="hudBtns">
+      <button id="btnAch">🏆</button>
+      <button id="btnMute">🔊</button>
+      <button id="btnLang">🌐</button>
+      <button id="btnHelp">❓</button>
+    </div>
+  </div>
+  <div id="stage">
+    <canvas id="cv"></canvas>
+    <div id="modeTip"></div>
+  </div>
+  <div id="bar">
+    <div id="nextBox"><span class="lbl" data-i18n="next"></span><span id="nextFruit">🍒</span></div>
+    <button class="tool" data-tool="hammer">🔨<i class="tn" id="cHammer">0</i></button>
+    <button class="tool" data-tool="bomb">💣<i class="tn" id="cBomb">0</i></button>
+    <button class="tool" data-tool="rainbow">🌈<i class="tn" id="cRainbow">0</i></button>
+    <button class="tool" id="btnSkins">🎨</button>
+    <button class="tool" id="btnShareTop">📣</button>
+    <button id="btnDaily">📅 <span data-i18n="daily"></span></button>
+  </div>
+</div>
+
+<div class="mask" id="mHelp"><div class="card">
+  <h2 data-i18n="helpTitle"></h2>
+  <p class="help" data-i18n="help"></p>
+  <button class="btn primary" id="btnHelpOk" data-i18n="start"></button>
+</div></div>
+
+<div class="mask" id="mOver"><div class="card">
+  <h2 data-i18n="gOver"></h2>
+  <div id="overRank"></div>
+  <div class="bigScore" id="overScore">0</div>
+  <div class="overStats" id="overStats"></div>
+  <button class="btn gold" id="btnShare2">📣 <span data-i18n="shareTitle"></span></button>
+  <button class="btn primary" id="btnRestart" data-i18n="again"></button>
+  <button class="btn gold" id="btnRevive" data-i18n="revive"></button>
+</div></div>
+
+<div class="mask" id="mAch"><div class="card">
+  <h2>🏆 <span data-i18n="ach"></span></h2>
+  <div id="achList"></div>
+  <button class="btn primary" data-close data-i18n="close"></button>
+</div></div>
+
+<div class="mask" id="mDaily"><div class="card">
+  <h2>📅 <span data-i18n="dTitle"></span></h2>
+  <div id="dailyInfo" style="font-size:12px;color:#aab;margin-bottom:8px"></div>
+  <div id="dailyGrid"></div>
+  <button class="btn gold" id="btnClaim"></button>
+  <button class="btn primary" data-close data-i18n="close"></button>
+</div></div>
+
+<div class="mask" id="mLang"><div class="card">
+  <h2 data-i18n="langTitle"></h2>
+  <div id="langList"></div>
+  <button class="btn primary" data-close data-i18n="close"></button>
+</div></div>
+
+<div class="mask" id="mSkins"><div class="card">
+  <h2 data-i18n="skinTitle"></h2>
+  <div id="skinList"></div>
+  <button class="btn primary" data-close data-i18n="close"></button>
+</div></div>
+
+<div class="mask" id="mShare"><div class="card">
+  <h2 data-i18n="shareTitle"></h2>
+  <p class="shareTip" data-i18n="shareTip"></p>
+  <img id="shareImg" alt="score">
+  <div id="shareBonus"></div>
+  <button class="btn gold" id="btnNativeShare" data-i18n="btnNative"></button>
+  <button class="btn ghost" id="btnCopyLink" data-i18n="btnCopy"></button>
+  <button class="btn ghost" id="btnSaveImg" data-i18n="btnSaveImg"></button>
+  <button class="btn primary" data-close data-i18n="close"></button>
+</div></div>
+
+<div class="mask" id="mConfirm"><div class="card">
+  <h2 id="cfTitle"></h2>
+  <p class="help" id="cfDesc" style="text-align:center"></p>
+  <button class="btn gold" id="cfOk" data-i18n="buyBtn"></button>
+  <button class="btn primary" data-close data-i18n="cancel"></button>
+</div></div>
+
+<div id="toasts"></div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

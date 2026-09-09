@@ -1,0 +1,22 @@
+node_modules/
+dist/
+build/
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp & misc
+*.tmp
+*.swp
+*~
