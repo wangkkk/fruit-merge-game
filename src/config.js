@@ -3,7 +3,7 @@
  * 对应原单文件 §1「基础配置」：全部常量集中在最前，杜绝 TDZ。
  * ============================================================ */
 
-export const SHARE_URL = 'https://localhost/fruit-merge'; // ← 部署后替换
+export const SHARE_URL = 'https://game.ssqlab.online/'; // ← 部署后替换
 export const SHARE_BONUS = 40;
 
 /** localStorage 存档键名 */

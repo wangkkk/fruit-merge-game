@@ -8,8 +8,7 @@ Drop fruits into the jar. Two identical fruits merge into the next size up.
 Chain merges within two seconds for combo multipliers — but if the pile
 rests above the red line for too long, the run ends.
 
-<!-- Drop a screenshot at docs/screenshot.png, then uncomment: -->
-<!-- ![gameplay](docs/screenshot.png) -->
+![gameplay](screenshot/screenshot.png)
 
 ## Features
 
@@ -23,6 +22,10 @@ rests above the red line for too long, the run ends.
 - Localized UI: English, 简体中文, 日本語, Español — browser language autodetect
 - Progress saved to localStorage
 - Sound effects synthesized live with WebAudio; the repo ships no binary assets
+
+## Play it live
+
+Try the game online: https://game.ssqlab.online/
 
 ## Getting started
 
